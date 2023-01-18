@@ -9,5 +9,7 @@ public class Main {
         //facade.doneListeningToMusic();
         //facade.listenToRadio();
         //facade.doneListenToRadio();
+
+        facade.startDemo();
     }
 }
