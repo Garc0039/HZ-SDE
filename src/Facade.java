@@ -1,3 +1,4 @@
+import console.ConsoleReader;
 import console.ConsoleWriter;
 
 public class Facade {
@@ -11,8 +12,9 @@ public class Facade {
     PopcornPopper popcornPopper;
     ConsoleWriter consoleWriter;
 
-    GamingEnvironment gamingEnvironment;
+    ConsoleReader consoleReader;
 
+    Strategy strategy;
     public Facade() {
         this.amp = new Amplifier("Top-O-Line Amplifier");
         this.tuner = new Tuner("Top-O-Line AM/FM Tuner", amp, 69.420);
@@ -23,17 +25,12 @@ public class Facade {
         this.screen = new Screen("Theater Screen");
         this.popcornPopper = new PopcornPopper("Popcorn Popper");
         this.consoleWriter = new ConsoleWriter();
-        this.gamingEnvironment = new GamingProxy(new GamingSetup());
+        this.consoleReader = new ConsoleReader();
     }
 
-    public void startGamingSetup() {
-        gamingEnvironment.startSetup("Forza 5");
-        consoleWriter.writeLine("\n");
-    }
-
-    public void stopGamingSetup() {
-        gamingEnvironment.stopSetup("Forza 5");
-        consoleWriter.writeLine("\n");
+    public void setStrategyAndRun(Strategy strategy) {
+        this.strategy = strategy;
+        this.strategy.execute();
     }
 
     public Facade(Amplifier amplifier, Tuner tuner, DvdPlayer dvdPlayer, CdPlayer cdPlayer, Projector projector, TheaterLights theaterLights, Screen screen, PopcornPopper popcornPopper) {
@@ -103,9 +100,7 @@ public class Facade {
         amp.off();
     }
 
-    public void startDemo() {
-        consoleWriter.writeLine("Starting up movie environment \n");
-        getReadyForMovie();
+    public void delayedFinishedMovie() {
         new java.util.Timer().schedule(
                 new java.util.TimerTask() {
                     @Override
@@ -114,45 +109,64 @@ public class Facade {
                         consoleWriter.writeLine("Shutting off movie environment");
                         consoleWriter.writeLine("\n");
                         finishedMovie();
-
-                        new java.util.Timer().schedule(
-                                new java.util.TimerTask() {
-                                    @Override
-                                    public void run() {
-                                        consoleWriter.writeLine("\n");
-                                        consoleWriter.writeLine("Starting Music environment");
-                                        consoleWriter.writeLine("\n");
-                                        listenToMusic();
-                                        consoleWriter.writeLine("\n");
-
-                                        new java.util.Timer().schedule(
-                                                new java.util.TimerTask() {
-                                                    @Override
-                                                    public void run() {
-                                                        startGamingSetup();
-                                                        consoleWriter.writeLine("\n");
-
-                                                        new java.util.Timer().schedule(
-                                                                new java.util.TimerTask() {
-                                                                    @Override
-                                                                    public void run() {
-                                                                        stopGamingSetup();
-                                                                        consoleWriter.writeLine("\n");
-                                                                    }
-                                                                },
-                                                                20000
-                                                        );
-                                                    }
-                                                },
-                                                5000
-                                        );
-                                    }
-                                },
-                                2000
-                        );
                     }
                 },
                 2000
         );
+    }
+
+    public void delayedListeningToMusicAndQGame() {
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        consoleWriter.writeLine("\n");
+                        consoleWriter.writeLine("Starting Music environment");
+                        consoleWriter.writeLine("\n");
+                        listenToMusic();
+                        consoleWriter.writeLine("\n");
+                        consoleWriter.writeLine("If you want to play Forza 5 type start.");
+                    }
+                },
+                3000
+        );
+    }
+    public void startDemo() {
+        consoleWriter.writeLine("Starting up movie environment \n");
+        getReadyForMovie();
+        delayedFinishedMovie();
+        delayedListeningToMusicAndQGame();
+
+        String startInput = consoleReader.readLine();
+
+        while(!startInput.equals("start")) {
+            consoleWriter.writeLine("You must type start, in order to keep the demo running");
+            startInput = consoleReader.readLine();
+        }
+
+        if(startInput.equals("start")) {
+            setStrategyAndRun(new StartGamingEnvStrategy());
+
+            new java.util.Timer().schedule(
+                    new java.util.TimerTask() {
+                        @Override
+                        public void run() {
+                            consoleWriter.writeLine("If you want to stop playing Forza 5 type stop.");
+                        }
+                    },
+                    18000
+            );
+
+            String stopInput = consoleReader.readLine();
+
+            while(!stopInput.equals("stop")) {
+                consoleWriter.writeLine("You must type stop, in order to keep the demo running");
+                stopInput = consoleReader.readLine();
+            }
+
+            if(stopInput.equals("stop")) {
+                setStrategyAndRun(new StopGamingEnvStrategy());
+            }
+        }
     }
 }

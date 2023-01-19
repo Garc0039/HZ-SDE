@@ -36,6 +36,7 @@ public class GamingProxy implements GamingEnvironment{
                     @Override
                     public void run() {
                         consoleWriter.writeLine("Successfully shut off your gaming environment!");
+                        System.exit(1);
                     }
                 },
                 25000
