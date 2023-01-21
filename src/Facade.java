@@ -169,4 +169,52 @@ public class Facade {
             }
         }
     }
+
+    public void singleton() {
+        Database database = Database.getInstance();
+        String input;
+
+        while(true) {
+            consoleWriter.writeLine("Welcome to our dictionary!");
+            consoleWriter.writeLine("Would you like to add or check words? If you change your mind please type .swtich! If you want to stop type .finish!");
+            input = consoleReader.readLine();
+            if(input.equals("add")) {
+                consoleWriter.writeLine("What word would you like to save to our database?");
+                input = consoleReader.readLine();
+                if(input.equals(".finish")){
+                    break;
+                }
+                if(input.equals(".switch")) {
+                    consoleWriter.writeLine("What word would you like to check in our database?");
+                    input = consoleReader.readLine();
+                    if(input.equals(".finish")){
+                        break;
+                    }
+                    database.checkIfAvailable(input);
+                    continue;
+                }
+                database.addWordToArray(input);
+            }
+            if(input.equals("check")) {
+                consoleWriter.writeLine("What word would you like to check in our database?");
+                input = consoleReader.readLine();
+                if(input.equals(".finish")){
+                    break;
+                }
+                if(input.equals(".switch")) {
+                    consoleWriter.writeLine("What word would you like to add to our database?");
+                    input = consoleReader.readLine();
+                    if(input.equals(".finish")){
+                        break;
+                    }
+                    database.addWordToArray(input);
+                    continue;
+                }
+                database.checkIfAvailable(input);
+            }
+            if(input.equals(".finish")){
+                break;
+            }
+        }
+    }
 }

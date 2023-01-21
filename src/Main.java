@@ -10,6 +10,6 @@ public class Main {
         //facade.listenToRadio();
         //facade.doneListenToRadio();
 
-        facade.startDemo();
+        facade.singleton();
     }
 }
