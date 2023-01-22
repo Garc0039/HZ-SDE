@@ -132,11 +132,23 @@ public class Facade {
         );
     }
     public void startDemo() {
+        startDemoBeginning();
+        startDemoGamingEnvironmentStart();
+    }
+
+    public void startDemoBeginning() {
+        consoleWriter.writeLine("Starting dictionary game demo! \n");
+        dictionaryGame();
+        consoleWriter.writeLine("Starting Games\n");
+        this.runningGamesAI();
+        consoleWriter.writeLine("Starting environment demo! \n");
         consoleWriter.writeLine("Starting up movie environment \n");
         getReadyForMovie();
         delayedFinishedMovie();
         delayedListeningToMusicAndQGame();
+    }
 
+    public void startDemoGamingEnvironmentStart() {
         String startInput = consoleReader.readLine();
 
         while(!startInput.equals("start")) {
@@ -144,6 +156,10 @@ public class Facade {
             startInput = consoleReader.readLine();
         }
 
+        this.startDemoGamingEnvironmentLogic(startInput);
+    }
+
+    public void startDemoGamingEnvironmentLogic(String startInput) {
         if(startInput.equals("start")) {
             setStrategyAndRun(new StartGamingEnvStrategy());
 
@@ -170,7 +186,7 @@ public class Facade {
         }
     }
 
-    public void singleton() {
+    public void dictionaryGame() {
         Database database = Database.getInstance();
         String input;
 
@@ -216,5 +232,12 @@ public class Facade {
                 break;
             }
         }
+    }
+
+    public void runningGamesAI() {
+        consoleWriter.writeLine("Clash of Clans! \n");
+        CocAI cocAI = new CocAI();
+        consoleWriter.writeLine("\n Forza Horizon 5 \n");
+        ForzaAI forzaAI = new ForzaAI();
     }
 }
